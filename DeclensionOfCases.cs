@@ -1,9 +1,50 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace DeclensionOfCases
 {
-    public static class DeclensionOfCases
+    public class DeclensionOfCases
     {
+        /// <summary>
+        /// Називний відмінок
+        /// </summary>
+        /// <returns></returns>
+        public string Nominative
+        { get; protected set; }
+
+        /// <summary>
+        /// Родовий відмінок
+        /// </summary>
+        /// <returns></returns>
+        public string Genitive
+        { get; protected set; }
+
+        /// <summary>
+        /// Давальний відмінок
+        /// </summary>
+        public string Dative
+        { get; protected set; }
+
+        /// <summary>
+        /// Знахідний відмінок
+        /// </summary>
+        public string Accusative
+        { get; protected set; }
+
+        /// <summary>
+        /// Орудний відмінок
+        /// </summary>
+        public string Instrumental
+        { get; protected set; }
+
+        /// <summary>
+        /// Місцевий відмінок
+        /// </summary>
+        public string Locative
+        { get; protected set; }
+
+        /// <summary>
+        /// Роздільник
+        /// </summary>
         public static string Separator = " ";
 
         /// <summary>
@@ -19,13 +60,11 @@ namespace DeclensionOfCases
         /// <param name="Name"> - Ім'я </param>
         /// <param name="MiddleName"> - По-батькові </param>
         /// <param name="Shorted"> - Ознака скороченого ПІБ (за замовчанням "false")</param>
-        public static IDictionary<string, string> ToCases(string Surname, string Name, string MiddleName, bool Shorted = false)
+        public DeclensionOfCases(string Surname, string Name, string MiddleName, bool Shorted = false)
         {
-            IDictionary<string, string> DeclensionOfCases = new Dictionary<string, string>();
-
-            IDictionary<string, string> NameInCases = new Dictionary<string, string>();
-            IDictionary<string, string> SurnameInCases = new Dictionary<string, string>();
-            IDictionary<string, string> MiddleNameInCases = new Dictionary<string, string>();
+            Dictionary<string, string> NameInCases = new Dictionary<string, string>();
+            Dictionary<string, string> SurnameInCases = new Dictionary<string, string>();
+            Dictionary<string, string> MiddleNameInCases = new Dictionary<string, string>();
 
             if (!string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(Surname) && !string.IsNullOrEmpty(MiddleName))
             {
@@ -34,57 +73,58 @@ namespace DeclensionOfCases
                     if (MiddleName.Substring(MiddleName.Length - 2, 2).ToUpper() == "ИЧ" | MiddleName.Substring(MiddleName.Length - 2, 2).ToUpper() == "ІЧ")
                     {
                         if (!Shorted)
-                            NameInCases = NameToCases_Male(Name);
+                        { NameInCases = NameToCases_Male(Name); }
+
                         SurnameInCases = SurnameToCases_Male(Surname);
                     }
                     else if (MiddleName.Substring(MiddleName.Length - 3, 3).ToUpper() == "ВНА")
                     {
                         if (!Shorted)
-                            NameInCases = NameToCases_Female(Name);
+                        { NameInCases = NameToCases_Female(Name); }
+
                         SurnameInCases = SurnameToCases_Female(Surname);
                     }
                     if (!Shorted)
-                        MiddleNameInCases = MiddleNameToCases(MiddleName);
+                    { MiddleNameInCases = MiddleNameToCases(MiddleName); }
 
                     if (!Shorted && NameInCases.Count > 0 && SurnameInCases.Count > 0 && MiddleNameInCases.Count > 0)
                     {
-                        DeclensionOfCases.Add("Nominative", string.Concat(Surname, Separator, Name, Separator, MiddleName));
-                        DeclensionOfCases.Add("Genitive", string.Concat(SurnameInCases["Genitive"], Separator, NameInCases["Genitive"], Separator, MiddleNameInCases["Genitive"]));
-                        DeclensionOfCases.Add("Dative", string.Concat(SurnameInCases["Dative"], Separator, NameInCases["Dative"], Separator, MiddleNameInCases["Dative"]));
-                        DeclensionOfCases.Add("Accusative", string.Concat(SurnameInCases["Accusative"], Separator, NameInCases["Accusative"], Separator, MiddleNameInCases["Accusative"]));
-                        DeclensionOfCases.Add("Instrumental", string.Concat(SurnameInCases["Instrumental"], Separator, NameInCases["Instrumental"], Separator, MiddleNameInCases["Instrumental"]));
-                        DeclensionOfCases.Add("Locative", string.Concat(SurnameInCases["Locative"], Separator, NameInCases["Locative"], Separator, MiddleNameInCases["Locative"]));
+                        Nominative = string.Concat(Surname, Separator, Name, Separator, MiddleName);
+                        Genitive = string.Concat(SurnameInCases["Genitive"], Separator, NameInCases["Genitive"], Separator, MiddleNameInCases["Genitive"]);
+                        Dative = string.Concat(SurnameInCases["Dative"], Separator, NameInCases["Dative"], Separator, MiddleNameInCases["Dative"]);
+                        Accusative = string.Concat(SurnameInCases["Accusative"], Separator, NameInCases["Accusative"], Separator, MiddleNameInCases["Accusative"]);
+                        Instrumental = string.Concat(SurnameInCases["Instrumental"], Separator, NameInCases["Instrumental"], Separator, MiddleNameInCases["Instrumental"]);
+                        Locative = string.Concat(SurnameInCases["Locative"], Separator, NameInCases["Locative"], Separator, MiddleNameInCases["Locative"]);
                     }
                     else if (Shorted && SurnameInCases.Count > 0)
                     {
                         string NameAndMiddleNameShorted = string.Concat(Name.Substring(0, 1), ".", MiddleName.Substring(0, 1), ".");
 
-                        DeclensionOfCases.Add("Nominative", string.Concat(Surname, Separator, NameAndMiddleNameShorted));
-                        DeclensionOfCases.Add("Genitive", string.Concat(SurnameInCases["Genitive"], NameAndMiddleNameShorted));
-                        DeclensionOfCases.Add("Dative", string.Concat(SurnameInCases["Dative"], NameAndMiddleNameShorted));
-                        DeclensionOfCases.Add("Accusative", string.Concat(SurnameInCases["Accusative"], NameAndMiddleNameShorted));
-                        DeclensionOfCases.Add("Instrumental", string.Concat(SurnameInCases["Instrumental"], NameAndMiddleNameShorted));
-                        DeclensionOfCases.Add("Locative", string.Concat(SurnameInCases["Locative"].ToString(), NameAndMiddleNameShorted));
+                        Nominative = string.Concat(Surname, Separator, NameAndMiddleNameShorted);
+                        Genitive = string.Concat(SurnameInCases["Genitive"], NameAndMiddleNameShorted);
+                        Dative = string.Concat(SurnameInCases["Dative"], NameAndMiddleNameShorted);
+                        Accusative = string.Concat(SurnameInCases["Accusative"], NameAndMiddleNameShorted);
+                        Instrumental = string.Concat(SurnameInCases["Instrumental"], NameAndMiddleNameShorted);
+                        Locative = string.Concat(SurnameInCases["Locative"].ToString(), NameAndMiddleNameShorted);
                     }
                     else
                     {
                         string EmptyString = string.Empty;
-                        DeclensionOfCases.Add("Nominative", string.Concat(Surname, Separator, Name, Separator, MiddleName));
-                        DeclensionOfCases.Add("Genitive", EmptyString);
-                        DeclensionOfCases.Add("Dative", EmptyString);
-                        DeclensionOfCases.Add("Accusative", EmptyString);
-                        DeclensionOfCases.Add("Instrumental", EmptyString);
-                        DeclensionOfCases.Add("Locative", EmptyString);
+                        Nominative = string.Concat(Surname, Separator, Name, Separator, MiddleName);
+                        Genitive = EmptyString;
+                        Dative = EmptyString;
+                        Accusative = EmptyString;
+                        Instrumental = EmptyString;
+                        Locative = EmptyString;
                     }
                 }
             }
-            return DeclensionOfCases;
         }
 
         //Відмінювання і'мя чоловічого роду 
-        private static IDictionary<string, string> NameToCases_Male(string Name)
+        private Dictionary<string, string> NameToCases_Male(string Name)
         {
-            IDictionary<string, string> NameInCases = new Dictionary<string, string>();
+            Dictionary<string, string> NameInCases = new Dictionary<string, string>();
 
             int lngth = 0;
             int del = 0;
@@ -142,9 +182,9 @@ namespace DeclensionOfCases
         }
 
         //Відмінювання ім'я жіночого роду 
-        private static IDictionary<string, string> NameToCases_Female(string Name)
+        private Dictionary<string, string> NameToCases_Female(string Name)
         {
-            IDictionary<string, string> NameInCases = new Dictionary<string, string>();
+            Dictionary<string, string> NameInCases = new Dictionary<string, string>();
 
             int lngth = 0;
             int del = 0;
@@ -239,9 +279,9 @@ namespace DeclensionOfCases
         }
 
         //Відмінювання прізвище чоловічого роду 
-        private static IDictionary<string, string> SurnameToCases_Male(string Surname)
+        private Dictionary<string, string> SurnameToCases_Male(string Surname)
         {
-            IDictionary<string, string> SurnameInCases = new Dictionary<string, string>();
+            Dictionary<string, string> SurnameInCases = new Dictionary<string, string>();
 
             int lngth = 0;
             int del = 0;
@@ -464,9 +504,9 @@ namespace DeclensionOfCases
         }
 
         //Відмінювання прізвище жіночого роду 
-        private static IDictionary<string, string> SurnameToCases_Female(string Surname)
+        private Dictionary<string, string> SurnameToCases_Female(string Surname)
         {
-            IDictionary<string, string> SurnameInCases = new Dictionary<string, string>();
+            Dictionary<string, string> SurnameInCases = new Dictionary<string, string>();
 
             int lngth = 0;
             int del = 0;
@@ -589,9 +629,9 @@ namespace DeclensionOfCases
         }
 
         //Відмінювання По-батькові не залежно від статі 
-        private static IDictionary<string, string> MiddleNameToCases(string MiddleName)
+        private Dictionary<string, string> MiddleNameToCases(string MiddleName)
         {
-            IDictionary<string, string> MiddleNameInCases = new Dictionary<string, string>();
+            Dictionary<string, string> MiddleNameInCases = new Dictionary<string, string>();
 
             int lngth = 0;
             int del = 0;
